@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "101157630463",
+    "project_id": "fellas-flutter",
+    "storage_bucket": "fellas-flutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:101157630463:android:f0af17b0077f4b7cb037ca",
+        "android_client_info": {
+          "package_name": "com.example.fellas"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "101157630463-rkss5u3hq817rsb4lm8io9nb5gfrm8eq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fellas",
+            "certificate_hash": "e944d225b72b29a119eeb1cbda91f0e67b88be56"
+          }
+        },
+        {
+          "client_id": "101157630463-roi07v2gc6jkfcqb5h6vcfqcjer2cjcd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8oFKX2owCKwvvWO9zKYdOXDHcvJQoCJU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "101157630463-roi07v2gc6jkfcqb5h6vcfqcjer2cjcd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
