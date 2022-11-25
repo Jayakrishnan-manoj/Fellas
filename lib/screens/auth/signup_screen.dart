@@ -1,19 +1,21 @@
-import 'package:fellas/widgets/widgets.dart';
+import 'package:fellas/screens/auth/login_screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import './signup_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+import '../../widgets/widgets.dart';
+
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
   final formKey = GlobalKey<FormState>();
   String email = "";
   String password = "";
+  String fullName = "";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,13 +40,37 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 10,
                 ),
                 const Text(
-                  "Login and Connect with your Fellas!",
+                  "Create an account and start connecting!",
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
-                Image.asset('assets/login.png'),
+                Image.asset('assets/register.png'),
+                TextFormField(
+                  decoration: textInputDecoration.copyWith(
+                    labelText: "Full Name",
+                    prefixIcon: Icon(
+                      Icons.person,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  onChanged: (val) {
+                    setState(() {
+                      fullName = val;
+                    });
+                  },
+                  validator: (val) {
+                    if(val!.isNotEmpty){
+                      return null;
+                    }else{
+                      return "Name cannot be empty";
+                    }
+                  },
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
                 TextFormField(
                   decoration: textInputDecoration.copyWith(
                     labelText: "Email",
@@ -106,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     onPressed: () {},
                     child: const Text(
-                      "Sign In",
+                      "Sign Up",
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -119,14 +145,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 Text.rich(
                   TextSpan(
-                    text: "Don't have an account?",
+                    text: "Already have an account?",
                     style: const TextStyle(
                       color: Colors.black,
                       fontSize: 14,
                     ),
                     children: <TextSpan>[
                       TextSpan(
-                          text: " Sign Up",
+                          text: " Login",
                           style: TextStyle(
                             color: Theme.of(context).primaryColor,
                             decoration: TextDecoration.underline,
@@ -135,7 +161,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ..onTap = () {
                               nextScreenReplace(
                                 context,
-                                const SignUpScreen(),
+                                const LoginScreen(),
                               );
                             }),
                     ],

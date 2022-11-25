@@ -3,6 +3,7 @@ import 'package:fellas/screens/auth/login_screen.dart';
 import 'package:fellas/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import './constants/constants.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,6 +39,10 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primaryColor: Constants().primaryColor,
+        scaffoldBackgroundColor: const Color(0xffe7f1f1),
+      ),
       home: _isSignedIn ? HomeScreen() : LoginScreen(),
     );
   }
