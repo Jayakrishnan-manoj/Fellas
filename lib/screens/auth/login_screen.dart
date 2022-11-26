@@ -171,19 +171,20 @@ class _LoginScreenState extends State<LoginScreen> {
       await auth.loginUser(email, password).then(
         ((value) async {
           if (value == true) {
-            QuerySnapshot snapshot = await Database(uid: FirebaseAuth.instance.currentUser!.uid)
-                .getUserData(email);
+            QuerySnapshot snapshot =
+                await Database(uid: FirebaseAuth.instance.currentUser!.uid)
+                    .getUserData(email);
             await HelperFunctions.saveUserLoggedInStatus(true);
             await HelperFunctions.saveUserEmail(email);
-            await HelperFunctions.saveUserName(
-              snapshot.docs[0]["fullName"]
-            );
+            await HelperFunctions.saveUserName(snapshot.docs[0]["fullName"]);
             nextScreenReplace(context, const HomeScreen());
           } else {
             showSnackBar(context, Colors.red, value);
-            setState(() {
-              _isLoading = false;
-            });
+            setState(
+              () {
+                _isLoading = false;
+              }
+            );
           }
         }),
       );
