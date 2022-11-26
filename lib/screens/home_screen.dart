@@ -19,21 +19,26 @@ class _HomeScreenState extends State<HomeScreen> {
   String userName = "";
   String email = "";
   Auth auth = Auth();
+
   @override
   void initState() {
-    getUserData();
     super.initState();
+    gettingUserData();
   }
 
-  getUserData() async {
-    await HelperFunctions.getUserEmail().then(
+  gettingUserData() {
+    HelperFunctions.getUserEmail().then(
       (value) {
-        email = value!;
+        setState(() {
+          email = value!;
+        });
       },
     );
-    await HelperFunctions.getUserName().then(
+    HelperFunctions.getUserName().then(
       (val) {
-        userName = val!;
+        setState(() {
+          userName = val!;
+        });
       },
     );
   }
@@ -77,9 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
               userName,
               textAlign: TextAlign.center,
               style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.black
-              ),
+                  fontWeight: FontWeight.bold, color: Colors.black),
             ),
             const SizedBox(
               height: 30,
@@ -88,7 +91,10 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 2,
             ),
             ListTile(
-              leading: Icon(Icons.group,color: Colors.grey[700],),
+              leading: Icon(
+                Icons.group,
+                color: Colors.grey[700],
+              ),
               selectedTileColor: Theme.of(context).primaryColor,
               selected: true,
               contentPadding:
@@ -106,7 +112,12 @@ class _HomeScreenState extends State<HomeScreen> {
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               onTap: () {
-                nextScreen(context, const ProfileScreen());
+                nextScreenReplace(
+                    context,
+                    ProfileScreen(
+                      userName: userName,
+                      email: email,
+                    ));
               },
               title: const Text(
                 "Profile",
@@ -118,11 +129,12 @@ class _HomeScreenState extends State<HomeScreen> {
             ListTile(
               title: const Text(
                 "Logout",
-                style: TextStyle(
-                  color: Colors.red
-                ),
+                style: TextStyle(color: Colors.red),
               ),
-              leading: const Icon(Icons.logout,color: Colors.red,),
+              leading: const Icon(
+                Icons.logout,
+                color: Colors.red,
+              ),
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               onTap: () async {
