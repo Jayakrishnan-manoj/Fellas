@@ -6,7 +6,9 @@ import 'package:fellas/screens/profile_page.dart';
 import 'package:fellas/screens/search_screen.dart';
 import 'package:fellas/services/auth.dart';
 import 'package:fellas/widgets/widgets.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../services/database.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,6 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String userName = "";
   String email = "";
   Auth auth = Auth();
+  Stream? groups;
 
   @override
   void initState() {
@@ -26,21 +29,28 @@ class _HomeScreenState extends State<HomeScreen> {
     gettingUserData();
   }
 
-  gettingUserData() {
-    HelperFunctions.getUserEmail().then(
+  gettingUserData() async {
+    await HelperFunctions.getUserEmail().then(
       (value) {
         setState(() {
           email = value!;
         });
       },
     );
-    HelperFunctions.getUserName().then(
+    await HelperFunctions.getUserName().then(
       (val) {
         setState(() {
           userName = val!;
         });
       },
     );
+    await Database(uid: FirebaseAuth.instance.currentUser!.uid)
+        .getUserGroups()
+        .then((snapshot) {
+      setState(() {
+        groups = snapshot;
+      });
+    });
   }
 
   @override
@@ -172,20 +182,90 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       );
                     });
-
-                // auth.signOut().whenComplete(
-                //   () {
-                //     nextScreenReplace(
-                //       context,
-                //       const LoginScreen(),
-                //     );
-                //   },
-                // );
               },
             )
           ],
         ),
       ),
+      body: groupList(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        elevation: 0,
+        backgroundColor: Theme.of(context).primaryColor,
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+          size: 30,
+        ),
+      ),
+    );
+  }
+
+  popUpDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text(
+              "Create a Group",
+              textAlign: TextAlign.left,
+            ),
+          );
+        });
+  }
+
+  groupList() {
+    return StreamBuilder(
+      builder: (context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          if (snapshot.data['groups'] != null) {
+            if (snapshot.data['groups'].length != 0) {
+              return Text("Helloo");
+            } else {
+              return noGroupWidget();
+            }
+          } else {
+            return noGroupWidget();
+          }
+        } else {
+          return Center(
+            child: CircularProgressIndicator(
+              color: Theme.of(context).primaryColor,
+            ),
+          );
+        }
+      },
+      stream: groups,
+    );
+  }
+
+  noGroupWidget() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 25),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          GestureDetector(
+            onTap: () {
+              popUpDialog(context);
+            },
+            child: Icon(
+              Icons.add_circle,
+              color: Colors.grey[500],
+              size: 75,
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          const Text(
+            "Create groups and start connecting with your fellas!",
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
     );
   }
 }
+ 
