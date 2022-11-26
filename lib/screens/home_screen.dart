@@ -1,3 +1,4 @@
+import 'package:fellas/services/auth.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -5,9 +6,13 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Auth auth = Auth();
     return Scaffold(
       body: Center(
-        child: Text("HomeScreen"),
+        child: ElevatedButton(
+          onPressed: ()=>auth.signOut(),
+          child: Text("Log out"),
+        ),
       ),
     );
   }
