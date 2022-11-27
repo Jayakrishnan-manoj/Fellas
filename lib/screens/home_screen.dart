@@ -5,6 +5,7 @@ import 'package:fellas/screens/auth/login_screen.dart';
 import 'package:fellas/screens/profile_page.dart';
 import 'package:fellas/screens/search_screen.dart';
 import 'package:fellas/services/auth.dart';
+import 'package:fellas/widgets/group_tile.dart';
 import 'package:fellas/widgets/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -22,11 +23,21 @@ class _HomeScreenState extends State<HomeScreen> {
   String email = "";
   Auth auth = Auth();
   Stream? groups;
+  bool _isLoading = false;
+  String groupName = "";
 
   @override
   void initState() {
     super.initState();
     gettingUserData();
+  }
+
+  String getId(String res) {
+    return res.substring(0, res.indexOf("_"));
+  }
+
+  String getName(String res) {
+    return res.substring(res.indexOf("_") + 1);
   }
 
   gettingUserData() async {
@@ -189,7 +200,9 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: groupList(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          popUpDialog(context);
+        },
         elevation: 0,
         backgroundColor: Theme.of(context).primaryColor,
         child: const Icon(
@@ -203,13 +216,89 @@ class _HomeScreenState extends State<HomeScreen> {
 
   popUpDialog(BuildContext context) {
     showDialog(
+        barrierDismissible: false,
         context: context,
         builder: (context) {
-          return AlertDialog(
-            title: const Text(
-              "Create a Group",
-              textAlign: TextAlign.left,
-            ),
+          return StatefulBuilder(
+            builder: ((context, setState) {
+              return AlertDialog(
+                title: const Text(
+                  "Create a Group",
+                  textAlign: TextAlign.left,
+                ),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _isLoading
+                        ? Center(
+                            child: CircularProgressIndicator(
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          )
+                        : TextField(
+                            onChanged: (val) {
+                              setState(() {
+                                groupName = val;
+                              });
+                            },
+                            style: const TextStyle(color: Colors.black),
+                            decoration: InputDecoration(
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).primaryColor),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: Color.fromRGBO(66, 110, 112, 1),
+                                ),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(color: Colors.red),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                          ),
+                  ],
+                ),
+                actions: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).primaryColor,
+                    ),
+                    child: const Text("CANCEL"),
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      if (groupName != "") {
+                        setState(() {
+                          _isLoading = true;
+                        });
+                        Database(uid: FirebaseAuth.instance.currentUser!.uid)
+                            .createGroup(
+                          userName,
+                          FirebaseAuth.instance.currentUser!.uid,
+                          groupName,
+                        )
+                            .whenComplete(() {
+                          _isLoading = false;
+                        });
+                        Navigator.of(context).pop();
+                        showSnackBar(context, Colors.green, "Group Created!");
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).primaryColor,
+                    ),
+                    child: const Text("Create Group"),
+                  )
+                ],
+              );
+            }),
           );
         });
   }
@@ -220,7 +309,17 @@ class _HomeScreenState extends State<HomeScreen> {
         if (snapshot.hasData) {
           if (snapshot.data['groups'] != null) {
             if (snapshot.data['groups'].length != 0) {
-              return Text("Helloo");
+              return ListView.builder(
+                itemBuilder: (context, index) {
+                  //int reverseIndex = snapshot.data['groups'].length - index - 1;
+                  return GroupTile(
+                    groupId: getId(snapshot.data["groups"][index]),
+                    groupName: getName(snapshot.data["groups"][index]),
+                    userName: snapshot.data["fullName"],
+                  );
+                },
+                itemCount: snapshot.data['groups'].length,
+              );
             } else {
               return noGroupWidget();
             }
@@ -268,4 +367,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
- 
