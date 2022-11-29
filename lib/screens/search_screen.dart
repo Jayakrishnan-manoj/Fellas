@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fellas/helper/helper_function.dart';
+import 'package:fellas/screens/chat_screen.dart';
 import 'package:fellas/services/database.dart';
+import 'package:fellas/widgets/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -179,7 +181,31 @@ class _SearchScreenState extends State<SearchScreen> {
       ),
       subtitle: Text("Admin: ${getName(admin)}"),
       trailing: InkWell(
-        onTap: () async {},
+        onTap: () async {
+          await Database(uid: user!.uid)
+              .toggleGroupJoin(groupId, userName, groupName);
+          if (isJoined) {
+            setState(() {
+              isJoined = !isJoined;
+            });
+            showSnackBar(context, Colors.green, "Joined the group!");
+            Future.delayed(const Duration(seconds: 2), () {
+              nextScreen(
+                  context,
+                  ChatScreen(
+                    groupId: groupId,
+                    groupName: groupName,
+                    username: userName,
+                  ));
+            });
+          } else {
+            setState(() {
+              isJoined = !isJoined;
+              showSnackBar(
+                  context, Colors.red, "Left the group ${getName(groupName)}");
+            });
+          }
+        },
         child: isJoined
             ? Container(
                 decoration: BoxDecoration(
