@@ -1,8 +1,6 @@
 import 'package:fellas/services/auth.dart';
 import 'package:fellas/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 import '../screens/auth/login_screen.dart';
 import '../screens/home_screen.dart';

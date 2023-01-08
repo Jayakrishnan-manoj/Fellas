@@ -192,13 +192,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
         _isLoading = true;
       });
       await auth.registerUser(fullName, email, password).then(
-        ((value)async  {
+        ((value) async {
           if (value == true) {
             await HelperFunctions.saveUserLoggedInStatus(true);
             await HelperFunctions.saveUserEmail(email);
             await HelperFunctions.saveUserName(fullName);
             nextScreenReplace(context, HomeScreen());
-          }else{
+          } else {
             showSnackBar(context, Colors.red, value);
             setState(() {
               _isLoading = false;

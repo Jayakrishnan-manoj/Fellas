@@ -73,6 +73,8 @@ class Database {
         .snapshots();
   }
 
+
+
   Future getGroupAdmin(String groupId) async {
     DocumentReference d = groupCollection.doc(groupId);
     DocumentSnapshot documentSnapshot = await d.get();
@@ -85,6 +87,10 @@ class Database {
 
   searchByName(String groupName) async {
     return groupCollection.where("groupName", isEqualTo: groupName).get();
+  }
+
+  getAllgroups() async {
+    return groupCollection.get();
   }
 
   Future<bool> isUserJoined(
